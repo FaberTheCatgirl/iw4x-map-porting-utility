@@ -16,6 +16,12 @@
 
         public string IW5Path { get; set; }
 
+        public string T4Path { get; set; }
+
+        public string T5Path { get; set; }
+
+        public string T6Path { get; set; }
+
         public string AppDataIW4xLibraryPath => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "xlabs", "data", "iw4x", "iw4x.dll"
@@ -33,7 +39,19 @@
             "main", "zone", "open-iw5.exe", "mss32.dll", "binkw32.dll"
         };
 
-        public bool IsValid => IsIW4PathGood(out _) && (IsIW3PathGood(out _) || IsIW5PathGood(out _));
+        private static readonly string[] mandatoryT4Files = new string[] {
+            "main", "zone", "CoDWaWmp.exe"
+        };
+
+        private static readonly string[] mandatoryT5Files = new string[] {
+            "main", "zone", "BlackOpsMP.exe"
+        };
+
+        private static readonly string[] mandatoryT6Files = new string[] {
+            "main", "zone", "t6mp.exe"
+        };        
+
+        public bool IsValid => IsIW4PathGood(out _) && (IsIW3PathGood(out _) || IsIW5PathGood(out _)) || (IsT4PathGood(out _) || IsT5PathGood(out _) || IsT6PathGood(out _));
 
         public bool HasXLabsInstalled()
         {
@@ -107,6 +125,66 @@
                 if (!File.Exists(path) && !Directory.Exists(path))
                 {
                     error = $"Missing critical file/directory {path}";
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool IsT4PathGood(out string error)
+        {
+            error = string.Empty;
+
+            if (!Directory.Exists(T4Path)) {
+                error = "No such file or directory!";
+                return false;
+            }
+
+            for (int i = 0; i < mandatoryT4Files.Length; i++) {
+                string path = Path.Combine(T4Path, mandatoryT4Files[i]);
+                if (!File.Exists(path) && !Directory.Exists(path)) {
+                    error = $"Missing critical file/directory {mandatoryT4Files[i]}";
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool IsT5PathGood(out string error)
+        {
+            error = string.Empty;
+
+            if (!Directory.Exists(T5Path)) {
+                error = "No such file or directory!";
+                return false;
+            }
+
+            for (int i = 0; i < mandatoryT5Files.Length; i++) {
+                string path = Path.Combine(T5Path, mandatoryT5Files[i]);
+                if (!File.Exists(path) && !Directory.Exists(path)) {
+                    error = $"Missing critical file/directory {mandatoryT5Files[i]}";
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool IsT6PathGood(out string error)
+        {
+            error = string.Empty;
+
+            if (!Directory.Exists(T6Path)) {
+                error = "No such file or directory!";
+                return false;
+            }
+
+            for (int i = 0; i < mandatoryT6Files.Length; i++) {
+                string path = Path.Combine(T6Path, mandatoryT6Files[i]);
+                if (!File.Exists(path) && !Directory.Exists(path)) {
+                    error = $"Missing critical file/directory {mandatoryT6Files[i]}";
                     return false;
                 }
             }
@@ -189,6 +267,63 @@
             }
 
             IW4Path = string.Empty;
+            return false;
+        }
+
+        public bool TryDetectT4Path()
+        {
+            string[] candidates = {
+                @"C:\Program Files (x86)\Steam\steamapps\common\Call of Duty World at War",
+                @"C:\Program Files (x86)\Activision\Call of Duty World at War",
+                @"D:\Games\Call of Duty World at War",
+            };
+
+            for (int i = 0; i < candidates.Length; i++) {
+                T4Path = candidates[i];
+                if (IsT4PathGood(out _)) {
+                    return true;
+                }
+            }
+
+            T4Path = string.Empty;
+            return false;
+        }
+
+        public bool TryDetectT5Path()
+        {
+            string[] candidates = {
+                @"C:\Program Files (x86)\Steam\steamapps\common\Call of Duty Black Ops",
+                @"C:\Program Files (x86)\Activision\Call of Duty Black Ops",
+                @"D:\Games\Call of Duty Black Ops",
+            };
+
+            for (int i = 0; i < candidates.Length; i++) {
+                T5Path = candidates[i];
+                if (IsT5PathGood(out _)) {
+                    return true;
+                }
+            }
+
+            T5Path = string.Empty;
+            return false;
+        }
+
+        public bool TryDetectT6Path()
+        {
+            string[] candidates = {
+                @"C:\Program Files (x86)\Steam\steamapps\common\Call of Duty Black Ops II",
+                @"C:\Program Files (x86)\Activision\Call of Duty Black Ops II",
+                @"D:\Games\Call of Duty Black Ops II",
+            };
+
+            for (int i = 0; i < candidates.Length; i++) {
+                T6Path = candidates[i];
+                if (IsT6PathGood(out _)) {
+                    return true;
+                }
+            }
+
+            T6Path = string.Empty;
             return false;
         }
     }

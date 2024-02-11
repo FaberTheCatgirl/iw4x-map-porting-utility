@@ -24,16 +24,22 @@
         {
             InitializeComponent();
             iw3MapListBox.ItemCheck += Iw3MapListBox_ItemCheck;
-            iw5MapListBox.ItemCheck += Iw5MapListBox_ItemCheck;
             iw4ZoneListBox.ItemCheck += Iw4ZoneListBox_ItemCheck;
+            iw5MapListBox.ItemCheck += Iw5MapListBox_ItemCheck;
+            t4MapListBox.ItemCheck += T4MapListBox_ItemCheck;
+            t5MapListBox.ItemCheck += T5MapListBox_ItemCheck;
+            t6MapListBox.ItemCheck += T6MapListBox_ItemCheck;
             outputTextBox.Text = string.Empty;
             smodelsFixComboBox.SelectedIndex = 2;
 
             SetupTooltips();
 
-            RefreshIW4Buttons();
             RefreshIW3Buttons();
+            RefreshIW4Buttons();
             RefreshIW5Buttons();
+            RefreshT4Buttons();
+            RefreshT5Buttons();
+            RefreshT6Buttons();
         }
 
         private void Iw5MapListBox_ItemCheck(object sender, ItemCheckEventArgs e)
@@ -49,6 +55,21 @@
         private void Iw3MapListBox_ItemCheck(object _a, ItemCheckEventArgs _b)
         {
             this.BeginInvoke((MethodInvoker)RefreshIW3Buttons);
+        }
+
+        private void T4MapListBox_ItemCheck(object _a, ItemCheckEventArgs _b)
+        {
+            this.BeginInvoke((MethodInvoker)RefreshT4Buttons);
+        }
+
+        private void T5MapListBox_ItemCheck(object _a, ItemCheckEventArgs _b)
+        {
+            this.BeginInvoke((MethodInvoker)RefreshT5Buttons);
+        }
+
+        private void T6MapListBox_ItemCheck(object _a, ItemCheckEventArgs _b)
+        {
+            this.BeginInvoke((MethodInvoker)RefreshT6Buttons);
         }
 
         private void RefreshIW5Buttons()
@@ -75,6 +96,21 @@
             editCSVButton.Enabled = oneMapSelected;
         }
 
+        private void RefreshT4Buttons()
+        {
+            t4ExportButton.Enabled = t4MapListBox.CheckedItems.Count > 0;
+        }
+
+        private void RefreshT5Buttons()
+        {
+            t5ExportButton.Enabled = t5MapListBox.CheckedItems.Count > 0;
+        }
+
+        private void RefreshT6Buttons()
+        {
+            t6ExportButton.Enabled = t6MapListBox.CheckedItems.Count > 0;
+        }
+
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
@@ -88,9 +124,18 @@
 
             if (paths.IsValid) {
                 RefreshIW3();
+                RefreshIW4();
                 RefreshIW5();
+                RefreshT4();
+                RefreshT5();
+                RefreshT6();
                 RefreshZoneSourcesList();
+                RefreshIW3Buttons();
                 RefreshIW4Buttons();
+                RefreshIW5Buttons();
+                RefreshT4Buttons();
+                RefreshT5Buttons();
+                RefreshT6Buttons();
             }
             else {
                 Application.Exit();
@@ -118,6 +163,54 @@
             if (iw3PathIsGood) {
                 RefreshIW3MapList();
                 RefreshIW3Buttons();
+            }
+        }
+
+        private void RefreshIW4()
+        {
+            bool iw4PathIsGood = paths.IsIW4PathGood(out _);
+
+            (iw4TabPage as Control).Enabled = iw4PathIsGood;
+
+            if (iw4PathIsGood) {
+                RefreshZoneSourcesList();
+                RefreshIW4Buttons();
+            }
+        }
+
+        private void RefreshT4()
+        {
+            bool t4PathIsGood = paths.IsT4PathGood(out _);
+
+            (t4TabPage as Control).Enabled = t4PathIsGood;
+
+            if (t4PathIsGood) {
+                RefreshT4MapList();
+                RefreshT4Buttons();
+            }
+        }
+
+        private void RefreshT5()
+        {
+            bool t5PathIsGood = paths.IsT5PathGood(out _);
+
+            (t5TabPage as Control).Enabled = t5PathIsGood;
+
+            if (t5PathIsGood) {
+                RefreshT5MapList();
+                RefreshT5Buttons();
+            }
+        }
+
+        private void RefreshT6()
+        {
+            bool t6PathIsGood = paths.IsT6PathGood(out _);
+
+            (t6TabPage as Control).Enabled = t6PathIsGood;
+
+            if (t6PathIsGood) {
+                RefreshT6MapList();
+                RefreshT6Buttons();
             }
         }
 
@@ -159,6 +252,82 @@
             iw3MapListBox.ResumeLayout();
         }
 
+        private void RefreshIW3MapList()
+        {
+            var maps = IW3xportHelper.GetMapList(ref paths);
+
+            iw3MapListBox.SuspendLayout();
+
+            iw3MapListBox.Items.Clear();
+
+            for (int i = 0; i < System.Enum.GetValues(typeof(ExportHelper.Map.ECategory)).Length; i++) {
+                foreach (var map in maps) {
+                    if (map.Category == (ExportHelper.Map.ECategory)i) {
+                        iw3MapListBox.Items.Add(map, false);
+                    }
+                }
+            }
+
+            iw3MapListBox.ResumeLayout();
+        }
+
+        private void RefreshT4MapList()
+        {
+            var maps = T4xportHelper.GetMapList(ref paths);
+
+            t4MapListBox.SuspendLayout();
+
+            t4MapListBox.Items.Clear();
+
+            for (int i = 0; i < System.Enum.GetValues(typeof(ExportHelper.Map.ECategory)).Length; i++) {
+                foreach (var map in maps) {
+                    if (map.Category == (ExportHelper.Map.ECategory)i) {
+                        t4MapListBox.Items.Add(map, false);
+                    }
+                }
+            }
+
+            t4MapListBox.ResumeLayout();
+        }
+
+        private void RefreshT5MapList()
+        {
+            var maps = T5xportHelper.GetMapList(ref paths);
+
+            t5MapListBox.SuspendLayout();
+
+            t5MapListBox.Items.Clear();
+
+            for (int i = 0; i < System.Enum.GetValues(typeof(ExportHelper.Map.ECategory)).Length; i++) {
+                foreach (var map in maps) {
+                    if (map.Category == (ExportHelper.Map.ECategory)i) {
+                        t5MapListBox.Items.Add(map, false);
+                    }
+                }
+            }
+
+            t5MapListBox.ResumeLayout();
+        }
+
+        private void RefreshT6MapList()
+        {
+            var maps = T6xportHelper.GetMapList(ref paths);
+
+            t6MapListBox.SuspendLayout();
+
+            t6MapListBox.Items.Clear();
+
+            for (int i = 0; i < System.Enum.GetValues(typeof(ExportHelper.Map.ECategory)).Length; i++) {
+                foreach (var map in maps) {
+                    if (map.Category == (ExportHelper.Map.ECategory)i) {
+                        t6MapListBox.Items.Add(map, false);
+                    }
+                }
+            }
+
+            t6MapListBox.ResumeLayout();
+        }
+
         private void RefreshZoneSourcesList()
         {
             var sources = ZoneBuilderHelper.GetZoneSources(ref paths);
@@ -179,10 +348,30 @@
             RefreshIW3();
         }
 
+        public void iw4RefreshButton_Click(object sender, EventArgs e)
+        {
+            RefreshIW4();
+        }
+
 
         private void iw5RefreshButton_Click(object sender, EventArgs e)
         {
             RefreshIW5();
+        }
+
+        private void t4RefreshButton_Click(object sender, EventArgs e)
+        {
+            RefreshT4();
+        }
+
+        private void t5RefreshButton_Click(object sender, EventArgs e)
+        {
+            RefreshT5();
+        }
+
+        private void t6RefreshButton_Click(object sender, EventArgs e)
+        {
+            RefreshT6();
         }
 
         private void zbRefreshButton_Click(object sender, EventArgs e)
@@ -197,9 +386,18 @@
 
             if (paths.IsValid) {
                 RefreshIW3();
+                RefreshIW4();
                 RefreshIW5();
+                RefreshT4();
+                RefreshT5();
+                RefreshT6();
                 RefreshZoneSourcesList();
+                RefreshIW3Buttons();
                 RefreshIW4Buttons();
+                RefreshIW5Buttons();
+                RefreshT4Buttons();
+                RefreshT5Buttons();
+                RefreshT6Buttons();
             }
             else {
                 Application.Exit();

@@ -37,14 +37,76 @@
                 computedPath.TryDetectIW5Path();
             }
 
+            if (!computedPath.IsT4PathGood(out _)) 
+            {
+                computedPath.TryDetectT4Path();
+            }
+
+            if (!computedPath.IsT5PathGood(out _))
+            {
+                computedPath.TryDetectT5Path();
+            }
+
+            if (!computedPath.IsT6PathGood(out _))
+            {
+                computedPath.TryDetectT6Path();
+            }
+
             iw3PathTextBox.Text = computedPath.IW3Path;
             iw4PathTextBox.Text = computedPath.IW4Path;
             iw5PathTextBox.Text = computedPath.IW5Path;
+            t4PathTextBox.Text = computedPath.T4Path;
+            t5PathTextBox.Text = computedPath.T5Path;
+            t6PathTextBox.Text = computedPath.T6Path;
 
             iw3PathTextBox.TextChanged += Iw3PathTextBox_TextChanged;
             iw4PathTextBox.TextChanged += Iw4PathTextBox_TextChanged;
             iw5PathTextBox.TextChanged += Iw5PathTextBox_TextChanged;
+            t4PathTextBox.TextChanged += T4PathTextBox_TextChanged;
+            t5PathTextBox.TextChanged += T5PathTextBox_TextChanged;
+            t6PathTextBox.TextChanged += T6PathTextBox_TextChanged;
 
+        }
+
+        private void T4PathTextBox_TextChanged(object sender, EventArgs e)
+        {
+            computedPath.T4Path = t4PathTextBox.Text.Trim();
+
+            if (computedPath.IsT4PathGood(out string error))
+            {
+                okButton.Enabled = computedPath.IsValid;
+            }
+            else
+            {
+                MessageBox.Show(error, "Invalid path", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void T5PathTextBox_TextChanged(object sender, EventArgs e)
+        {
+            computedPath.T5Path = t5PathTextBox.Text.Trim();
+
+            if (computedPath.IsT5PathGood(out string error))
+            {
+                okButton.Enabled = computedPath.IsValid;
+            }
+            else
+            {
+                MessageBox.Show(error, "Invalid path", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void T6PathTextBox_TextChanged(object sender, EventArgs e)
+        {
+            computedPath.T6Path = t6PathTextBox.Text.Trim();
+
+            if (computedPath.IsT6PathGood(out string error))
+            {
+                okButton.Enabled = computedPath.IsValid;
+            }
+            else
+            {
+                MessageBox.Show(error, "Invalid path", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void Iw5PathTextBox_TextChanged(object sender, EventArgs e)
@@ -118,6 +180,33 @@
             if (openDialog.ShowDialog() == DialogResult.OK)
             {
                 iw5PathTextBox.Text = openDialog.SelectedPath;
+            }
+        }
+
+        private void browseT4Button_Click(object sender, EventArgs e)
+        {
+            var openDialog = new FolderBrowserDialog();
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                t4PathTextBox.Text = openDialog.SelectedPath;
+            }
+        }
+
+        private void browseT5Button_Click(object sender, EventArgs e)
+        {
+            var openDialog = new FolderBrowserDialog();
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                t5PathTextBox.Text = openDialog.SelectedPath;
+            }
+        }
+
+        private void browseT6Button_Click(object sender, EventArgs e)
+        {
+            var openDialog = new FolderBrowserDialog();
+            if (openDialog.ShowDialog() == DialogResult.OK)
+            {
+                t6PathTextBox.Text = openDialog.SelectedPath;
             }
         }
     }
